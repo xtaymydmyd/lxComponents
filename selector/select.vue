@@ -264,7 +264,7 @@ export default {
 
 <style lang="scss">
     @import '~assets/css/public.scss';
-    @import '~assets/css/flexComp.scss';
+    @import '~assets/css/flex.scss';
     .selectComponent{
         .ivu-modal-body{
             min-height:450px;

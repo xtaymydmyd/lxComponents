@@ -330,7 +330,7 @@ export default {
 
 <style lang="scss">
     @import '~assets/css/public.scss';
-    @import '~assets/css/flexComp.scss';
+    @import '~assets/css/flex.scss';
     .contentOrgWrap{
         .loading_tip{
             font-size: 12px;

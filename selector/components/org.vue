@@ -28,16 +28,15 @@
                         <span class="name">{{item.name}}</span>
                     </label>
                     <div class="rightBtnDisabled flex flex-align-items" v-show="item.check" >
-                        <img src="~lechatComponent/assets/img/level_disabled.png" alt="">
+                        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAADBElEQVR4Xu2aMYsTQRTH30sghgMhhaSxUMRgEwslciRvrxW8wi+hCIKdpYoXUUtLEdQPYaMIFurNpIgRRYPYXOEHsAiI5iLek4BCmGy4meyb21kyWyYz/33vt29m3/53EVb8wBXPHyKAWAEpBAaDwdp4PH4AAOcR8RgAlCxB7THzNwB4Wa1Wr7darZ+W83IbNrcEhsNhZTQavQeAZsaoPtfr9XONRmM3o47X6XMAlFJ3EPGW0Fm3iKgrpOVFZg6A1voTAJwWOttHIjojpOVFJg3AH4c1v19QEyI6tN+gPP9PA8BmQERkdbvUWi89Ny8IEYBJPstVzDI3VkBOBOISiEvAIKC13gMQe0hiIrJto3NZBGmd4A4inhCKZoeITgppeZFJA/AEES8Jne0xEV0R0vIikwbgMAC8Q8RTWc7IzF9qtdp6s9n8kUXH99zUDs94HD7usCcU/3HYN/HQ9K16/NCClownApCkWUQt5wrQWt8AgKvTZJn5YZIk930n7tOjdAKglLqAiM9nE2bmzSRJXviC4NujdALw7+rfNZK9SUT3fAHw7VG6AtgCgNtGsl0imv7u5fDtURYBgFePsggAlvYZbRyqCMBl4Wqt0/aANwDw2kXHHMvMu8y8vbGxoQ7aoJGogCy5m3PnNlSbMl4UgM3c0AB8J6IjswnZJBEBLCBgAy+oCmDmp0mSXDYqwKtHKQFAZBMslUr9SqXyttVq/Z4FoJTy6lFKAPDaCSqlvHqURQDg1aMMHsB0Ofj0KAsBQLLRMLUiABe6C1phr5ugS3zLjI0V4EItrwoIxhPMA0BonuCBW2LRE/T83WLwm6DWOnqC5kYt+d1iESogeFPU5U66aOwEALYR8Vqn0/m6yo5Qn4jWQwYwfTFqvhqTqID/Gr+IaC1YAEqpi4j4TDJjQ+sDEZ0NFgAzl3q93iMA2ASAo4IgJszcL5fL3Xa7/SpYT1AwYWupoDxB66gFBwblCQrmZS2llArHE7SOWnhgMJ6gcF5ByDm1wkFELBxEBCAMtHByfwG09DdfAvw+AQAAAABJRU5ErkJggg==" alt="">
                         <span>下级</span>
                     </div>
                     <div class="rightBtn flex flex-align-items" v-show="!item.check" @click="changeLevel(item)">
-                        <img src="~lechatComponent/assets/img/level.png" alt="">
+                        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAADEElEQVR4Xu2av4sTQRTHvy+KBwGt7Cz8gSCIFv5iF+wFAwq6i/+AIgh2lipeRC0tRVD/Ackih3CHYKGexWwkKAqHhVfYa6Uod9F9st1lNyEz2Xm3EzMpk3nffe+TN5O33yxhxl804/XDA/AdMITAsefc3LqO+2CcArCbCA0dUMzIAHwl4EV/Dtd6Z+iXTlyda0pb4OBT3rZjC3oADlVKjPHpWxMnvrRorZKOcHAJQJDwbQJuWrruvIqobUlLRKYEIOzwRxAO27gaMz6kMR2xoSWlUe6ADv/V3fPjkmLGehrT3Lh1dX5e7oCEuZiQikjr5zKsEFsXBA+gSL7Kt1gl1ndATQT8FvBboEAgSDgj2LlJYoDTiLTG6Jp2QLnQIOFVAvZZSmhVRbTfkpaIzLAz4DGAizauxoxHaUyXbWhJaZQAnFzg7X/6eEeEA1UuyoyVHxmClQv0s4qOdOzQCW/gdpiwR/dM+C9uh6WJu6avNeO7lrTNfDwAmzSnUcu4A8IOXwdwJS82IzzoRnRPunBJj9IIQPiMTyPD4kDBDbTUOVqSgiDtUZoByL99wp2BYhk3VEx3pQBIe5RmABKeB3CrUGxbRZS/L/KS9iidBxAIe5TOA6jiMunEegAmGzccfga8BvDKRKe4loE1EJbT8/R2sw0aGx1QpfZibOlA1WnjUQnoxDoFgIHvaUQ7NxakU4QHMIKADjynOgDAExXRpY31SHuUNgBYOQSzDN1sL970jlO/AEDUo7QBQHYSTFjUo3QegLRH6TyAfDtIepRTAcDmoFHU8gBM6I4YhUUPQZP8JlnrO8CEWl0d4I4nWIMj5JYnWAMA7wkKP7fo/CHoPcEKzx5u1u2w6BygU8TUGyL5I7UELPeBq72YPs+sIwSgqyIK3AUw7K8xk0lq3FrGbxVT010ACZ8FsDCujok/Z7xXMR11FgCYG0GChwS0QNg1caGFwPwMAKFLjLaK6aWznqCtgk10pJ9bNBqETBK3tTZ0yRO0VZSJjlOeoEniNtc64wnaLMoVLefPAGlQHoA0Ydf1/wG+t0dfqRrD5AAAAABJRU5ErkJggg==" alt="">
                         <span>下级</span>
                     </div>
                 </div>
             </div>
-            
             <!-- 部门列表（单选 或 下级列表） -->
             <div v-if="config.type == 2" >
                 <div v-for="item  in orgList" :key="item.id" class="flex checkboxWrap uncheckboxWrap">
@@ -46,12 +45,11 @@
                         <span class="name">{{item.name}}</span>
                     </div>
                     <div class="rightBtn flex flex-align-items" @click="changeLevel(item)">
-                        <img src="~lechatComponent/assets/img/level.png" alt="">
+                        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAADEElEQVR4Xu2av4sTQRTHvy+KBwGt7Cz8gSCIFv5iF+wFAwq6i/+AIgh2lipeRC0tRVD/Ackih3CHYKGexWwkKAqHhVfYa6Uod9F9st1lNyEz2Xm3EzMpk3nffe+TN5O33yxhxl804/XDA/AdMITAsefc3LqO+2CcArCbCA0dUMzIAHwl4EV/Dtd6Z+iXTlyda0pb4OBT3rZjC3oADlVKjPHpWxMnvrRorZKOcHAJQJDwbQJuWrruvIqobUlLRKYEIOzwRxAO27gaMz6kMR2xoSWlUe6ADv/V3fPjkmLGehrT3Lh1dX5e7oCEuZiQikjr5zKsEFsXBA+gSL7Kt1gl1ndATQT8FvBboEAgSDgj2LlJYoDTiLTG6Jp2QLnQIOFVAvZZSmhVRbTfkpaIzLAz4DGAizauxoxHaUyXbWhJaZQAnFzg7X/6eEeEA1UuyoyVHxmClQv0s4qOdOzQCW/gdpiwR/dM+C9uh6WJu6avNeO7lrTNfDwAmzSnUcu4A8IOXwdwJS82IzzoRnRPunBJj9IIQPiMTyPD4kDBDbTUOVqSgiDtUZoByL99wp2BYhk3VEx3pQBIe5RmABKeB3CrUGxbRZS/L/KS9iidBxAIe5TOA6jiMunEegAmGzccfga8BvDKRKe4loE1EJbT8/R2sw0aGx1QpfZibOlA1WnjUQnoxDoFgIHvaUQ7NxakU4QHMIKADjynOgDAExXRpY31SHuUNgBYOQSzDN1sL970jlO/AEDUo7QBQHYSTFjUo3QegLRH6TyAfDtIepRTAcDmoFHU8gBM6I4YhUUPQZP8JlnrO8CEWl0d4I4nWIMj5JYnWAMA7wkKP7fo/CHoPcEKzx5u1u2w6BygU8TUGyL5I7UELPeBq72YPs+sIwSgqyIK3AUw7K8xk0lq3FrGbxVT010ACZ8FsDCujok/Z7xXMR11FgCYG0GChwS0QNg1caGFwPwMAKFLjLaK6aWznqCtgk10pJ9bNBqETBK3tTZ0yRO0VZSJjlOeoEniNtc64wnaLMoVLefPAGlQHoA0Ydf1/wG+t0dfqRrD5AAAAABJRU5ErkJggg==" alt="">
                         <span>下级</span>
                     </div>
                 </div>
             </div>
-            
             <!-- 可选择人员 -->
             <div v-for="(info , index) in memList" :key="info.id" class="checkboxWrap" @click="changeCheck(index , 2)"> 
                 <label class="checkboxLabel checkboxWrap ivu-checkbox-wrapper ivu-checkbox-group-item ivu-checkbox-default">

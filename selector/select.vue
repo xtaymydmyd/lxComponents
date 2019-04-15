@@ -3,7 +3,7 @@
         class="selectComponent"
         width="700"
         v-model="selectModal"
-        :title="title"
+        :title="config.title"
         @on-cancel="cancel">
         <div class="selector flex">
             <div class="selector_left flex flex-direction-column">
@@ -26,7 +26,10 @@
                 </div>
             </div>
             <div class="selector_right flex flex-direction-column">
-                <div class="selector_right_text">已选：</div>
+                <div class="selector_right_text flex">
+                    <span class="flex-1">已选：</span>
+                    <span class="clear-wrap" v-show="result.length > 0" @click="clearResult()"><Icon type="ios-trash-outline" /> <span>清空</span></span>
+                </div>
                 <div class="resultWrap flex-1">
                     <div class="resultBox flex flex-align-items" v-for="(item , i) in result" :key="i">
                         <i class="ivu-icon ivu-icon-ios-folder" v-if="item.type == 1 || item.type == 6"></i> 
@@ -40,7 +43,7 @@
         </div>
         <div slot="footer">
             <Button @click="cancel">取消</Button>
-            <Button type="primary" @click="submit" :disabled="result.length == 0">确定</Button>
+            <Button type="primary" @click="submit">确定</Button>
         </div>
     </Modal>
 </template>
@@ -86,6 +89,7 @@ export default {
         open(config) {
             this.config = config;
             this.config.type = this.config.type ? this.config.type : 1;
+            this.config.title = this.config.title ? this.config.title : '选择成员';
             this.config.muliteChoice = this.config.muliteChoice ? this.config.muliteChoice : 1
             this.result = this.config.data ? this.config.data : [];
             if(this.config.muliteChoice == 2){
@@ -203,7 +207,22 @@ export default {
                 this.$refs.charge.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 6)
             }
         }, 
-        
+        clearResult(){
+            for(var i = 0 ; i < this.result.length ; i++){
+                var info = this.result[i];
+                this.result.splice(i, 1);
+                i--;
+                if( info.type == 1 ) { //删除部门
+                    this.$refs.org.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 1)
+                }else if( info.type == 2 ) {
+                    this.$refs.org.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 2)
+                }else if(info.type == 3 || info.type == 4 || info.type == 5){
+                    this.$refs.role.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , info.type)
+                }else if(info.type == 6){
+                    this.$refs.charge.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 6)
+                }
+            }
+        },
         /**
          * 删除某条结果
         */
@@ -228,6 +247,7 @@ export default {
             this.$emit("on-submit" , JSON.parse(JSON.stringify(this.result)));
         },
         cancel(){
+            this.selectModal = false;
             this.$emit("on-cancel" , JSON.parse(JSON.stringify(this.result)));
         },
         getShortName(name){
@@ -261,6 +281,15 @@ export default {
         }
         .selector_right_text{
             font-size:14px;
+            .clear-wrap{
+                color: #666;
+                font-size: 12px;
+                margin-left: -4px;
+                cursor:pointer;
+                .ivu-icon{
+                    font-size: 18px;
+                }
+            }
         }
         .overflowYAuto{
             overflow-y:auto;

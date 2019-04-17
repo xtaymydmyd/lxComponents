@@ -1,6 +1,6 @@
 <template>
     <div class="roleContentWrap overflowYAuto" :style="{height : height}">
-       <div  v-for="(list , i ) in groupList" :key="list.id + '' + i" class="flex flex-align-items"  @click="changeCheck(i , 4)">
+       <div  v-for="(list , i ) in groupList" :key="list.id + '' + i" class="flex flex-align-items"  @click="changeCheck(i , 3)">
             <label class="checkboxLabel flex flex-align-items ivu-checkbox-wrapper ivu-checkbox-group-item ivu-checkbox-default">
                 <span class="ivu-checkbox" :class="{'ivu-checkbox-checked' : list.check}">
                     <span class="ivu-checkbox-inner"></span> 
@@ -47,12 +47,31 @@ export default {
         init(config , condition , fuzzy , result){
             this.config = config;
             this.condition = condition;
-            this.height = ((condition.org && condition.role && !condition.charge) || (condition.org && !condition.role && condition.charge) || (!condition.org && condition.role && condition.charge) || (condition.org && condition.role && condition.charge)) ? "329px" : '370px';
+            this.height = this.showTab() ? "329px" : '370px';
             this.result = result;
             this.fuzzy = fuzzy;
 
             this.groupLoading = true;
             this.getGroupList();
+        },
+        showTab(){
+            var num = 0
+            if(this.condition.org){
+                num ++;
+            }
+            if(this.condition.role){
+                num ++;
+            }
+            if(this.condition.group){
+                num ++;
+            }
+            if(this.condition.post){
+                num ++;
+            }
+            if(this.condition.charge){
+                num ++;
+            }
+            return num > 1 ? true : false
         },
         /**
          * 获取群组列表
@@ -66,7 +85,7 @@ export default {
                 if (res.status == 0) {
                     if(res.data){
                         for(var i = 0 ; i < res.data.length ; i++){
-                            res.data[i].type = 4;
+                            res.data[i].type = 3;
                             res.data[i].check = false;
                             res.data[i].id = res.data[i].groupId;
                         }
@@ -90,7 +109,7 @@ export default {
             this.groupList.push()
         },
         changeCheck(index){ 
-            this.$emit("group-check-change", this.groupList[index] , this.groupList[index].check , 4)
+            this.$emit("group-check-change", this.groupList[index] , this.groupList[index].check , 3)
         },
         /**
          * 设置选中

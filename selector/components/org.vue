@@ -1,8 +1,8 @@
 <template>
     <div class="contentOrgWrap flex flex-direction-column" :style="{height : height}">
-        <div class="flex orgSelectorNavbar" v-show="levelList.length > 1">
+        <div class="orgSelectorNavbar" v-show="levelList.length > 1">
             <div v-for="(list , i) in levelList" :key="i" class="orgNav flex flex-align-items" v-show="levelList.length > 1" :class="{ 'active' : i == ( levelList.length - 1 ) , 'arrow ivu-icon' : i < (levelList.length - 1 )}" @click="changeLevelItem(i)">
-                <span class="orgSelectorNavBarName">{{list.name}}</span> 
+                <div class="orgSelectorNavBarName">{{list.name}}</div> 
                 <!-- <Icon type="ios-arrow-forward" v-show="i < (levelList.length - 1 )"/> -->
             </div>
         </div>
@@ -20,7 +20,7 @@
             <!-- 可选择部门 -->
             <div v-if="config.type == 1" >
                 <div v-for="(item , j) in orgList" :key="item.id" class="flex checkboxWrap" >
-                    <label class="checkboxLabel flex-1 flex-align-items ivu-checkbox-wrapper ivu-checkbox-group-item ivu-checkbox-default " @click="changeCheck(j , 1)">
+                    <label class="checkboxLabel flex-1 flex-align-items ivu-checkbox-wrapper ivu-checkbox-group-item ivu-checkbox-default " @click="changeCheck(j , 0)">
                         <span class="ivu-checkbox " :class="{'ivu-checkbox-checked' : item.check}">
                             <span class="ivu-checkbox-inner"></span> 
                         </span> 
@@ -51,7 +51,7 @@
                 </div>
             </div>
             <!-- 可选择人员 -->
-            <div v-for="(info , index) in memList" :key="info.id" class="checkboxWrap" @click="changeCheck(index , 2)"> 
+            <div v-for="(info , index) in memList" :key="info.id" class="checkboxWrap" @click="changeCheck(index , 1)"> 
                 <label class="checkboxLabel checkboxWrap ivu-checkbox-wrapper ivu-checkbox-group-item ivu-checkbox-default">
                     <span class="ivu-checkbox" :class="{'ivu-checkbox-checked' : info.check}">
                         <span class="ivu-checkbox-inner"></span> 
@@ -94,27 +94,46 @@ export default {
         init(config , condition , fuzzy , result){
             this.config = config;
             this.condition = condition;
-            this.height = ((condition.org && condition.role && !condition.charge) || (condition.org && !condition.role && condition.charge) || (!condition.org && condition.role && condition.charge) || (condition.org && condition.role && condition.charge)) ? "329px" : '370px';
+            this.height = this.showTab() ? "329px" : '370px';
             this.result = result;
             this.fuzzy = fuzzy;
             this.getDeptInfo();
+        },
+        showTab(){
+            var num = 0
+            if(this.condition.org){
+                num ++;
+            }
+            if(this.condition.role){
+                num ++;
+            }
+            if(this.condition.group){
+                num ++;
+            }
+            if(this.condition.post){
+                num ++;
+            }
+            if(this.condition.charge){
+                num ++;
+            }
+            return num > 1 ? true : false
         },
         changeCheckAllStatus(){
             this.allStatus = !this.allStatus;
             if(this.config.type == 1){
                 for(let i = 0 ; i < this.orgList.length ; i++){
                     this.orgList[i].check = !this.allStatus;
-                    this.changeCheck(i , 1)
+                    this.changeCheck(i , 0)
                 }
                 for(let j = 0 ; j < this.memList.length ; j++){
                     this.memList[j].check = !this.allStatus;
-                    this.changeCheck(j , 2)
+                    this.changeCheck(j , 1)
                 }
             }
             if(this.config.type == 2){
                 for(var k = 0 ; k < this.memList.length ; k++){
                     this.memList[k].check = !this.allStatus;
-                    this.changeCheck(k , 2)
+                    this.changeCheck(k , 1)
                 }
             }
         },
@@ -242,10 +261,10 @@ export default {
          * 修改选中状态
         */
         changeCheck(index , type) {
-            if(type == 1) { // 改变部门状态
-                this.$emit("org-check-change", this.orgList[index] , this.orgList[index].check , 1)
-            }else if(type == 2) {
-                this.$emit("org-check-change", this.memList[index] , this.memList[index].check , 2)
+            if(type == 0) { // 改变部门状态
+                this.$emit("org-check-change", this.orgList[index] , this.orgList[index].check , 0)
+            }else if(type == 1) {
+                this.$emit("org-check-change", this.memList[index] , this.memList[index].check , 1)
             }
         },
         /**
@@ -349,10 +368,13 @@ export default {
             font-size: 14px;
             margin-bottom: 10px;
             margin-left: 8px;
+            overflow:hidden;
             .orgNav{
                 margin-right:3px;
                 color: #999;
+                float:left;
                 font-size:14px;
+                height:20px;
                 .ivu-icon-ios-arrow-forward{
                     margin-left: -3px;
                     font-size: 16px;

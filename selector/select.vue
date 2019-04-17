@@ -231,7 +231,7 @@ export default {
                         this.result.push(param)
                     }
                 }else{ 
-                    if(type == 1 || type == 2){
+                    if(type == 0 || type == 1){
                         this.$refs.org.allStatus = false;
                     }
                     for(var i = 0 ; i < this.result.length ; i++){
@@ -252,18 +252,18 @@ export default {
                     this.result[0] = param;
                 }
             }
-            if(type == 1) { // 部门状态发生改变时
+            if(type == 0) { // 部门状态发生改变时
+                this.$refs.org.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 0)
+            }else if(type == 1) { // 人员状态发生改变时
                 this.$refs.org.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 1)
-            }else if(type == 2) { // 人员状态发生改变时
-                this.$refs.org.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 2)
-            }else if(type == 3) {
-                this.$refs.role.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 3)
-            }else if(type == 4) {
-                this.$refs.group.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 4)
-            }else if(type == 5) {
-                this.$refs.post.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 5)
-            }else if(type == 6) {
-                this.$refs.charge.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 6)
+            }else if(type == 4) { // 角色状态发生改变时
+                this.$refs.role.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 4)
+            }else if(type == 3) { // v群组状态发生改变时
+                this.$refs.group.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 3)
+            }else if(type == 2) { // 岗位状态发生改变时 
+                this.$refs.post.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 2)
+            }else if(type == 5) { // 主管发生改变时
+                this.$refs.charge.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 5)
             }
         }, 
         clearResult(){
@@ -271,21 +271,21 @@ export default {
                 var info = this.result[i];
                 this.result.splice(i, 1);
                 i--;
-                if(info.type == 1 || info.type == 2){
+                if(info.type == 0 || info.type == 1){
                     this.$refs.org.allStatus = false;
                 }
-                if( info.type == 1 ) { //删除部门
+                if( info.type == 0 ) { //删除部门
+                    this.$refs.org.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 0)
+                }else if( info.type == 1 ) {
                     this.$refs.org.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 1)
-                }else if( info.type == 2 ) {
-                    this.$refs.org.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 2)
-                }else if(info.type == 3){
-                    this.$refs.role.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 3)
                 }else if(info.type == 4){
-                    this.$refs.group.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 4)
+                    this.$refs.role.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 4)
+                }else if(info.type == 3){
+                    this.$refs.group.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 3)
+                }else if(info.type == 2){
+                    this.$refs.post.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 2)
                 }else if(info.type == 5){
-                    this.$refs.post.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 5)
-                }else if(info.type == 6){
-                    this.$refs.charge.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 6)
+                    this.$refs.charge.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 5)
                 }
             }
         },
@@ -295,18 +295,18 @@ export default {
         deleteResult(index){
             var info = JSON.parse(JSON.stringify(this.result[index]))
             this.result.splice(index, 1);
-            if( info.type == 1 ) { //删除部门
+            if( info.type == 0 ) { //删除部门
+                this.$refs.org.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 0)
+            }else if( info.type == 1 ) {
                 this.$refs.org.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 1)
-            }else if( info.type == 2 ) {
-                this.$refs.org.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 2)
-            }else if(info.type == 3){
-                    this.$refs.role.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 3)
             }else if(info.type == 4){
-                this.$refs.group.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 4)
+                    this.$refs.role.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 4)
+            }else if(info.type == 3){
+                this.$refs.group.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 3)
+            }else if(info.type == 2){
+                this.$refs.post.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 2)
             }else if(info.type == 5){
-                this.$refs.post.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 5)
-            }else if(info.type == 6){
-                this.$refs.charge.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 6)
+                this.$refs.charge.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 5)
             }
         },
         submit(){
@@ -368,7 +368,7 @@ export default {
             height: 418px;
             .selector_left{
                 width: 55%;
-                padding-right: 15px;
+                padding-right: 10px;
                 .selector_left_content{
                     margin-top:15px;
                 }

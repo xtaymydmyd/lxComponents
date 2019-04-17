@@ -1,6 +1,6 @@
 <template>
     <div class="roleContentWrap overflowYAuto" :style="{height : height}">
-       <div  v-for="(list , i ) in roleList" :key="list.id + '' + i" class="flex flex-align-items"  @click="changeCheck(i , 3)">
+       <div  v-for="(list , i ) in roleList" :key="list.id + '' + i" class="flex flex-align-items"  @click="changeCheck(i , 4)">
             <label class="checkboxLabel flex flex-align-items ivu-checkbox-wrapper ivu-checkbox-group-item ivu-checkbox-default">
                 <span class="ivu-checkbox" :class="{'ivu-checkbox-checked' : list.check}">
                     <span class="ivu-checkbox-inner"></span> 
@@ -31,25 +31,7 @@ export default {
             },
             height:"329px",
             collapseVal : '1',
-            completeOrgTree:[{
-                label: '角色列表',
-                id : 3,
-                value : '3',
-                children: []
-            }, {
-                label: '群组列表',
-                id : 4,
-                value : '4',
-                children: []
-            }, {
-                label: '岗位列表',
-                id : 5,
-                value : '5',
-                children: []
-            }],
             roleLoading : true,
-            groupLoading : true,
-            postLoading : true,
             checkAllGroup : [],
             config : {},
             condition : {},
@@ -65,16 +47,32 @@ export default {
         init(config , condition , fuzzy , result){
             this.config = config;
             this.condition = condition;
-            this.height = ((condition.org && condition.role && !condition.charge) || (condition.org && !condition.role && condition.charge) || (!condition.org && condition.role && condition.charge) || (condition.org && condition.role && condition.charge)) ? "329px" : '370px';
+            this.height = this.showTab() ? "329px" : '370px';
             this.result = result;
             this.fuzzy = fuzzy;
 
             this.roleLoading = true;
-            this.groupLoading = true;
-            this.postLoading = true;
 
             this.getRoleList();
-            // this.getPostList();
+        },
+        showTab(){
+            var num = 0
+            if(this.condition.org){
+                num ++;
+            }
+            if(this.condition.role){
+                num ++;
+            }
+            if(this.condition.group){
+                num ++;
+            }
+            if(this.condition.post){
+                num ++;
+            }
+            if(this.condition.charge){
+                num ++;
+            }
+            return num > 1 ? true : false
         },
         /**
          * 获取角色列表
@@ -89,7 +87,7 @@ export default {
                     if(res.data){
                         for(var i = 0 ; i < res.data.length ; i++) {
                             res.data[i].check = false;
-                            res.data[i].type = 3;
+                            res.data[i].type = 4;
                         }
                         this.roleList = res.data;
                         this.roleLoading = false;
@@ -123,29 +121,6 @@ export default {
                 }
             })
         },
-        /**
-         * 获取群组列表
-        */
-        getPostList(){
-            var url = constGlobal.HostContact + 'postList/search';
-            var param = {
-                fuzzy : this.fuzzy
-            }
-            http.apiPost(url, param).then(res => {
-                if (res.status == 0) {
-                    if(res.data){
-                        for(var i = 0 ; i < res.data.length ; i++){
-                            res.data[i].check = false;
-                        }
-                        this.completeOrgTree[2].children = res.data;
-                        this.initCheck();
-                        this.postLoading = false
-                    }
-                } else {
-                    common.toastMsg(res.message) 
-                }
-            })
-        },
         initCheck(){
             for(var i = 0 ; i < this.result.length ; i++){
                 for(var k = 0 ; k < this.roleList.length ; k++){
@@ -157,7 +132,7 @@ export default {
             this.roleList.push()
         },
         changeCheck(index){ 
-            this.$emit("role-check-change", this.roleList[index] , this.roleList[index].check , 3)
+            this.$emit("role-check-change", this.roleList[index] , this.roleList[index].check , 4)
         },
         /**
          * 设置选中

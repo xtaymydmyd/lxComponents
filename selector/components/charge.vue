@@ -1,6 +1,6 @@
 <template>
     <div class="overflowYAuto" :style="{height : height}">
-        <div v-for="(item , i) in list" :key="i" :label="item.id" class="checkboxLabel flex flex-align-items" @click="changeCheck(i , 6)">
+        <div v-for="(item , i) in list" :key="i" :label="item.id" class="checkboxLabel flex flex-align-items" @click="changeCheck(i , 5)">
             <label class="flex-1 flex-align-items ivu-checkbox-wrapper ivu-checkbox-group-item ivu-checkbox-default " >
                 <span class="ivu-checkbox " :class="{'ivu-checkbox-checked' : item.check}">
                     <span class="ivu-checkbox-inner"></span> 
@@ -26,10 +26,29 @@ export default {
         init(config , condition , fuzzy , result){
             this.config = config;
             this.condition = condition;
-            this.height = ((condition.org && condition.role && !condition.charge) || (condition.org && !condition.role && condition.charge) || (!condition.org && condition.role && condition.charge) || (condition.org && condition.role && condition.charge)) ? "329px" : '370px';
+            this.height = this.showTab() ? "329px" : '370px';
             this.result = result;
             this.fuzzy = fuzzy;
             this.getChargeList();
+        },
+        showTab(){
+            var num = 0
+            if(this.condition.org){
+                num ++;
+            }
+            if(this.condition.role){
+                num ++;
+            }
+            if(this.condition.group){
+                num ++;
+            }
+            if(this.condition.post){
+                num ++;
+            }
+            if(this.condition.charge){
+                num ++;
+            }
+            return num > 1 ? true : false
         },
         getChargeList(){
             if(this.config.chargeLevel){
@@ -52,7 +71,6 @@ export default {
          * 改变状态
         */
         setCheckStatus(result , type){
-            console.log(result)
             this.result = result;
             for(var i = 0 ; i < this.list.length ; i++){
                 this.list[i].check = false;
@@ -78,8 +96,8 @@ export default {
             this.list.push()
         },
         changeCheck(index){
-            this.$emit("charge-check-change", this.list[index] , this.list[index].check , 6)
-        },
+            this.$emit("charge-check-change", this.list[index] , this.list[index].check , 5)
+        }
     }
 }
 </script>

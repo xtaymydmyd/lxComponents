@@ -1,6 +1,6 @@
 <template>
     <div class="roleContentWrap overflowYAuto" :style="{height : height}">
-       <div  v-for="(list , i ) in postList" :key="list.id + '' + i" class="flex flex-align-items"  @click="changeCheck(i , 5)">
+       <div  v-for="(list , i ) in postList" :key="list.id + '' + i" class="flex flex-align-items"  @click="changeCheck(i , 2)">
             <label class="checkboxLabel flex flex-align-items ivu-checkbox-wrapper ivu-checkbox-group-item ivu-checkbox-default">
                 <span class="ivu-checkbox" :class="{'ivu-checkbox-checked' : list.check}">
                     <span class="ivu-checkbox-inner"></span> 
@@ -47,7 +47,7 @@ export default {
         init(config , condition , fuzzy , result){
             this.config = config;
             this.condition = condition;
-            this.height = ((condition.org && condition.role && !condition.charge) || (condition.org && !condition.role && condition.charge) || (!condition.org && condition.role && condition.charge) || (condition.org && condition.role && condition.charge)) ? "329px" : '370px';
+            this.height = this.showTab() ? "329px" : '370px';
             this.result = result;
             this.fuzzy = fuzzy;
 
@@ -55,7 +55,25 @@ export default {
 
             this.getPostList();
         },
-        
+        showTab(){
+            var num = 0
+            if(this.condition.org){
+                num ++;
+            }
+            if(this.condition.role){
+                num ++;
+            }
+            if(this.condition.group){
+                num ++;
+            }
+            if(this.condition.post){
+                num ++;
+            }
+            if(this.condition.charge){
+                num ++;
+            }
+            return num > 1 ? true : false
+        },
         /**
          * 获取群组列表
         */
@@ -90,7 +108,7 @@ export default {
             this.postList.push()
         },
         changeCheck(index){ 
-            this.$emit("post-check-change", this.postList[index] , this.postList[index].check , 5)
+            this.$emit("post-check-change", this.postList[index] , this.postList[index].check , 2)
         },
         /**
          * 设置选中
@@ -126,12 +144,6 @@ export default {
         },
         getShortName(name){
             return name.slice(name.length - 2 , name.length)
-        },
-        submit(){
-
-        },
-        cancel(){
-
         }
     }
 }

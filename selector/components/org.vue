@@ -1,9 +1,9 @@
 <template>
     <div class="contentOrgWrap flex flex-direction-column" :style="{height : height}">
         <div class="flex orgSelectorNavbar" v-show="levelList.length > 1">
-            <div v-for="(list , i) in levelList" :key="i" class="orgNav" v-show="levelList.length > 1" :class="{ 'active' : i == ( levelList.length - 1 )}" @click="changeLevelItem(i)">
-                <span>{{list.name}}</span> 
-                <Icon type="ios-arrow-forward" v-show="i < (levelList.length - 1 )"/>
+            <div v-for="(list , i) in levelList" :key="i" class="orgNav flex flex-align-items" v-show="levelList.length > 1" :class="{ 'active' : i == ( levelList.length - 1 ) , 'arrow ivu-icon' : i < (levelList.length - 1 )}" @click="changeLevelItem(i)">
+                <span class="orgSelectorNavBarName">{{list.name}}</span> 
+                <!-- <Icon type="ios-arrow-forward" v-show="i < (levelList.length - 1 )"/> -->
             </div>
         </div>
         <div class="checkboxAll" v-if="config.muliteChoice == 1" @click="changeCheckAllStatus">
@@ -253,31 +253,28 @@ export default {
         */
         setCheckStatus(result , type){
             this.result = result;
-            if( type == 1 ) {
-                for(var i = 0 ; i < this.orgList.length ; i++){
-                    this.orgList[i].check = false;
-                }
-                for(var i = 0 ; i < this.result.length ; i++){
-                    for(var j = 0 ; j < this.orgList.length ; j++){
-                        if(this.result[i].id == this.orgList[j].id){
-                            this.orgList[j].check = true;
-                        }
-                    }
-                }
-                this.orgList.push()
-            }else if( type == 2){
-                for(var i = 0 ; i < this.memList.length ; i++){
-                    this.memList[i].check = false;
-                }
-                for(var i = 0 ; i < this.result.length ; i++){
-                    for(var j = 0 ; j < this.memList.length ; j++){
-                        if(this.result[i].id == this.memList[j].id){
-                            this.memList[j].check = true;
-                        }
-                    }
-                }
-                this.memList.push()
+            for(var i = 0 ; i < this.memList.length ; i++){
+                this.memList[i].check = false;
             }
+            for(var i = 0 ; i < this.orgList.length ; i++){
+                this.orgList[i].check = false;
+            }
+            for(var i = 0 ; i < this.result.length ; i++){
+                for(var j = 0 ; j < this.orgList.length ; j++){
+                    if(this.result[i].id == this.orgList[j].id){
+                        this.orgList[j].check = true;
+                    }
+                }
+            }
+            this.orgList.push()
+            for(var i = 0 ; i < this.result.length ; i++){
+                for(var j = 0 ; j < this.memList.length ; j++){
+                    if(this.result[i].id == this.memList[j].id){
+                        this.memList[j].check = true;
+                    }
+                }
+            }
+            this.memList.push()
         },
         /**
          * 获取人员列表数据
@@ -338,6 +335,16 @@ export default {
             text-align: center;
             margin: 5px 0px;
         }
+        .orgSelectorNavBarName{
+            position:relative;
+            margin-top:-1px;
+        }
+        .arrow{
+
+        }
+        .arrow:after{
+            content: "\F11F";
+        }
         .orgSelectorNavbar{
             font-size: 14px;
             margin-bottom: 10px;
@@ -345,6 +352,7 @@ export default {
             .orgNav{
                 margin-right:3px;
                 color: #999;
+                font-size:14px;
                 .ivu-icon-ios-arrow-forward{
                     margin-left: -3px;
                     font-size: 16px;

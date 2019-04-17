@@ -9,26 +9,34 @@
             <div class="selector_left flex flex-direction-column">
                 <Input v-model="fuzzy" icon="md-search" placeholder="请输入" clearable @on-enter="enter"/>
                 <div class="flex-1 selector_left_content">
-                    <Tabs type="card" :value="value" :animated="false" @on-click="changeTab" v-if="(condition.org && condition.role && !condition.charge) || (condition.org && !condition.role && condition.charge) || (!condition.org && condition.role && condition.charge) || (condition.org && condition.role && condition.charge)">
+                    <Tabs type="card" :value="value" :animated="false" @on-click="changeTab" v-if="showTab()">
                         <TabPane label="组织结构" name="org" v-if="condition.org">
                             <org :config="config" ref="org" @org-check-change=checkChange></org>
                         </TabPane>
                         <TabPane label="角色列表" name="role" v-if="condition.role">
                             <role ref="role" @role-check-change=checkChange></role>
                         </TabPane>
+                        <TabPane label="群组列表" name="group" v-if="condition.group">
+                            <group ref="group" @group-check-change=checkChange></group>
+                        </TabPane>
+                        <TabPane label="岗位列表" name="post" v-if="condition.post">
+                            <post ref="post" @post-check-change=checkChange></post>
+                        </TabPane>
                         <TabPane label="主管" name="charge" v-if="condition.charge">
                             <charge ref="charge" @charge-check-change=checkChange></charge>
                         </TabPane>
                     </Tabs>
-                    <org :config="config" ref="org" @org-check-change=checkChange v-if="condition.org && !condition.role && !condition.charge"></org>
-                    <role ref="role" @role-check-change=checkChange v-if="!condition.org && condition.role && !condition.charge"></role>
-                    <charge ref="charge" @charge-check-change=checkChange v-if="!condition.org && !condition.role && condition.charge"></charge>
+                    <org :config="config" ref="org" @org-check-change=checkChange v-if="showTabForOne('org')"></org>
+                    <role ref="role" @role-check-change=checkChange v-if="showTabForOne('role')"></role>
+                    <charge ref="charge" @charge-check-change=checkChange v-if="showTabForOne('charge')"></charge>
+                    <group ref="group" @group-check-change=checkChange v-if="showTabForOne('group')"></group>
+                    <post ref="post" @post-check-change=checkChange v-if="showTabForOne('post')"></post>
                 </div>
             </div>
             <div class="selector_right flex flex-direction-column">
                 <div class="selector_right_text flex">
                     <span class="flex-1">已选：</span>
-                    <span class="clear-wrap" v-show="result.length > 0" @click="clearResult()"><Icon type="ios-trash-outline" /> <span>清空</span></span>
+                    <span class="clear-wrap flex flex-align-items" v-show="result.length > 0" @click="clearResult()"><Icon type="ios-trash-outline" /> <span>清空</span></span>
                 </div>
                 <div class="resultWrap flex-1">
                     <div class="resultBox flex flex-align-items" v-for="(item , i) in result" :key="i">
@@ -37,6 +45,7 @@
                         <span class="iconWrap" v-if="item.type == 2">{{getShortName(item.label)}}</span> 
                         <div class="resultName flex-1">{{item.label}}</div>
                         <Icon type="ios-close" @click="deleteResult(i)"/>
+                        {{item.type}}
                     </div>
                 </div>
             </div>
@@ -51,6 +60,8 @@
 <script>
 import org from './components/org.vue'
 import role from './components/role.vue'
+import group from './components/group.vue'
+import post from './components/post.vue'
 import charge from './components/charge.vue'
 export default {
     name: 'index',
@@ -80,7 +91,9 @@ export default {
     components : {
         org,
         role,
-        charge
+        charge,
+        group,
+        post
     },
     methods : {
         /**
@@ -102,13 +115,42 @@ export default {
             
             this.initCondition();
         },
+        showTab(){
+            var num = 0
+            if(this.condition.org){
+                num ++;
+            }
+            if(this.condition.role){
+                num ++;
+            }
+            if(this.condition.group){
+                num ++;
+            }
+            if(this.condition.post){
+                num ++;
+            }
+            if(this.condition.charge){
+                num ++;
+            }
+            return num > 1 ? true : false
+        },
+        showTabForOne(key){
+            if(!this.showTab()){
+                return this.condition[key]
+            }
+            
+        },
         enter(){
             if(this.value == 'org'){
                 this.$refs.org.init(this.config , this.condition , this.fuzzy , JSON.parse(JSON.stringify(this.result)));
             }else if(this.value == 'role'){
                 this.$refs.role.init(this.config , this.condition , this.fuzzy , JSON.parse(JSON.stringify(this.result)));
-            }else if(this.value == 'group'){
+            }else if(this.value == 'charge'){
                 this.$refs.charge.init(this.config , this.condition , this.fuzzy , JSON.parse(JSON.stringify(this.result)));
+            }else if(this.value == 'group'){
+                this.$refs.group.init(this.config , this.condition , this.fuzzy , JSON.parse(JSON.stringify(this.result)));
+            }else if(this.value == 'post'){
+                this.$refs.post.init(this.config , this.condition , this.fuzzy , JSON.parse(JSON.stringify(this.result)));
             }
         },
         changeTab(value){
@@ -120,8 +162,12 @@ export default {
             }
             if(this.condition.role){
                 this.$refs.role.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 3)
-                this.$refs.role.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 4)
-                this.$refs.role.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 5)
+            }
+            if(this.condition.group){
+                this.$refs.group.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 4)
+            }
+            if(this.condition.post){
+                this.$refs.post.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 5)
             }
             if(this.condition.charge){
                 this.$refs.charge.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 6)
@@ -136,7 +182,7 @@ export default {
                     this.condition[this.config.condition[i]] = true;
                 }
             }
-            this.value = this.condition.org ? 'org' : this.condition.role ? 'role' : 'charge' 
+            this.value = this.condition.org ? 'org' : this.condition.role ? 'role' : this.condition.group ? 'group' : this.condition.post ? 'post' : 'charge' 
             this.$nextTick(function(){
                 this.initConditionData();
             })  
@@ -152,6 +198,12 @@ export default {
             }
             if(this.condition.role){
                 this.$refs.role.init(this.config , this.condition , this.fuzzy , JSON.parse(JSON.stringify(this.result)));
+            }
+            if(this.condition.group){
+                this.$refs.group.init(this.config , this.condition , this.fuzzy , JSON.parse(JSON.stringify(this.result)));
+            }
+            if(this.condition.post){
+                 this.$refs.post.init(this.config , this.condition , this.fuzzy , JSON.parse(JSON.stringify(this.result)));
             }
             if(this.condition.charge){
                 this.$refs.charge.init(this.config , this.condition , this.fuzzy , JSON.parse(JSON.stringify(this.result)));
@@ -179,6 +231,9 @@ export default {
                         this.result.push(param)
                     }
                 }else{ 
+                    if(type == 1 || type == 2){
+                        this.$refs.org.allStatus = false;
+                    }
                     for(var i = 0 ; i < this.result.length ; i++){
                         if(item.id == this.result[i].id){
                             this.result.splice(i, 1);
@@ -201,9 +256,13 @@ export default {
                 this.$refs.org.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 1)
             }else if(type == 2) { // 人员状态发生改变时
                 this.$refs.org.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 2)
-            }else if(type == 3 || type == 4 || type == 5){
-                this.$refs.role.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , type)
-            }else if(type == 6){
+            }else if(type == 3) {
+                this.$refs.role.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 3)
+            }else if(type == 4) {
+                this.$refs.group.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 4)
+            }else if(type == 5) {
+                this.$refs.post.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 5)
+            }else if(type == 6) {
                 this.$refs.charge.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 6)
             }
         }, 
@@ -212,12 +271,19 @@ export default {
                 var info = this.result[i];
                 this.result.splice(i, 1);
                 i--;
+                if(info.type == 1 || info.type == 2){
+                    this.$refs.org.allStatus = false;
+                }
                 if( info.type == 1 ) { //删除部门
                     this.$refs.org.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 1)
                 }else if( info.type == 2 ) {
                     this.$refs.org.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 2)
-                }else if(info.type == 3 || info.type == 4 || info.type == 5){
-                    this.$refs.role.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , info.type)
+                }else if(info.type == 3){
+                    this.$refs.role.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 3)
+                }else if(info.type == 4){
+                    this.$refs.group.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 4)
+                }else if(info.type == 5){
+                    this.$refs.post.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 5)
                 }else if(info.type == 6){
                     this.$refs.charge.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 6)
                 }
@@ -233,8 +299,12 @@ export default {
                 this.$refs.org.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 1)
             }else if( info.type == 2 ) {
                 this.$refs.org.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 2)
-            }else if(info.type == 3 || info.type == 4 || info.type == 5){
-                this.$refs.role.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , info.type)
+            }else if(info.type == 3){
+                    this.$refs.role.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 3)
+            }else if(info.type == 4){
+                this.$refs.group.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 4)
+            }else if(info.type == 5){
+                this.$refs.post.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 5)
             }else if(info.type == 6){
                 this.$refs.charge.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 6)
             }

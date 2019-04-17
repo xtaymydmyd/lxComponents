@@ -1,6 +1,6 @@
 <template>
     <div class="roleContentWrap overflowYAuto" :style="{height : height}">
-       <div  v-for="(list , i ) in roleList" :key="list.id + '' + i" class="flex flex-align-items"  @click="changeCheck(i , 3)">
+       <div  v-for="(list , i ) in groupList" :key="list.id + '' + i" class="flex flex-align-items"  @click="changeCheck(i , 4)">
             <label class="checkboxLabel flex flex-align-items ivu-checkbox-wrapper ivu-checkbox-group-item ivu-checkbox-default">
                 <span class="ivu-checkbox" :class="{'ivu-checkbox-checked' : list.check}">
                     <span class="ivu-checkbox-inner"></span> 
@@ -9,7 +9,7 @@
                 <span>{{list.name}}</span>
             </label>
         </div>
-        <div v-show="(roleList.length == 0 && !roleLoading)" style="text-align: center;color: #999;padding: 10px;">
+        <div v-show="(groupList.length == 0 && !groupLoading)" style="text-align: center;color: #999;padding: 10px;">
             暂无数据
         </div>
     </div>
@@ -31,31 +31,13 @@ export default {
             },
             height:"329px",
             collapseVal : '1',
-            completeOrgTree:[{
-                label: '角色列表',
-                id : 3,
-                value : '3',
-                children: []
-            }, {
-                label: '群组列表',
-                id : 4,
-                value : '4',
-                children: []
-            }, {
-                label: '岗位列表',
-                id : 5,
-                value : '5',
-                children: []
-            }],
-            roleLoading : true,
             groupLoading : true,
-            postLoading : true,
             checkAllGroup : [],
             config : {},
             condition : {},
             result : [],
             fuzzy : '',
-            roleList : []
+            groupList : []
         }
     },
     methods : {
@@ -69,35 +51,8 @@ export default {
             this.result = result;
             this.fuzzy = fuzzy;
 
-            this.roleLoading = true;
             this.groupLoading = true;
-            this.postLoading = true;
-
-            this.getRoleList();
-            // this.getPostList();
-        },
-        /**
-         * 获取角色列表
-        */
-        getRoleList(){
-            var url = constGlobal.HostPrivilege + 'roleList/search';
-            var param = {
-                fuzzy : this.fuzzy
-            }
-            http.apiPost(url, param).then(res => {
-                if (res.status == 0) {
-                    if(res.data){
-                        for(var i = 0 ; i < res.data.length ; i++) {
-                            res.data[i].check = false;
-                            res.data[i].type = 3;
-                        }
-                        this.roleList = res.data;
-                        this.roleLoading = false;
-                    }
-                } else {
-                    common.toastMsg(res.message) 
-                }
-            })
+            this.getGroupList();
         },
         /**
          * 获取群组列表
@@ -111,10 +66,11 @@ export default {
                 if (res.status == 0) {
                     if(res.data){
                         for(var i = 0 ; i < res.data.length ; i++){
-                            res.data[i].id = res.data[i].groupId;
+                            res.data[i].type = 4;
                             res.data[i].check = false;
+                            res.data[i].id = res.data[i].groupId;
                         }
-                        this.completeOrgTree[1].children = res.data;
+                        this.groupList = res.data;
                         this.initCheck();
                         this.groupLoading = false;
                     }
@@ -123,71 +79,48 @@ export default {
                 }
             })
         },
-        /**
-         * 获取群组列表
-        */
-        getPostList(){
-            var url = constGlobal.HostContact + 'postList/search';
-            var param = {
-                fuzzy : this.fuzzy
-            }
-            http.apiPost(url, param).then(res => {
-                if (res.status == 0) {
-                    if(res.data){
-                        for(var i = 0 ; i < res.data.length ; i++){
-                            res.data[i].check = false;
-                        }
-                        this.completeOrgTree[2].children = res.data;
-                        this.initCheck();
-                        this.postLoading = false
-                    }
-                } else {
-                    common.toastMsg(res.message) 
-                }
-            })
-        },
         initCheck(){
             for(var i = 0 ; i < this.result.length ; i++){
-                for(var k = 0 ; k < this.roleList.length ; k++){
-                    if(this.result[i].id == this.roleList[k].id){
-                        this.roleList[k].check = true;
+                for(var k = 0 ; k < this.groupList.length ; k++){
+                    if(this.result[i].id == this.groupList[k].id){
+                        this.groupList[k].check = true;
                     }
                 }
             }
-            this.roleList.push()
+            this.groupList.push()
         },
         changeCheck(index){ 
-            this.$emit("role-check-change", this.roleList[index] , this.roleList[index].check , 3)
+            this.$emit("group-check-change", this.groupList[index] , this.groupList[index].check , 4)
         },
         /**
          * 设置选中
         */
-        setCheckStatus(result , id){
+        setCheckStatus(result){
             this.result = result;
             if(this.config.muliteChoice == 1){
-                for(var i = 0 ; i < this.roleList.length ; i++){
-                    this.roleList[i].check = false;
+                for(var i = 0 ; i < this.groupList.length ; i++){
+                    this.groupList[i].check = false;
                 }
                 for(var i = 0 ; i < this.result.length ; i++){
-                    for(var j = 0 ; j < this.roleList.length ; j++){
-                        if(this.result[i].id == this.roleList[j].id){
-                            this.roleList[j].check = true;
+                    for(var j = 0 ; j < this.groupList.length ; j++){
+                        if(this.result[i].id == this.groupList[j].id){
+                            this.groupList[j].check = true;
                         }
                     }
                 }
-                this.roleList.push()
+                this.groupList.push()
             }else if(this.config.muliteChoice == 2) {
-                for(var i = 0 ; i < this.roleList.length ; i++){
-                    this.roleList[i].check = false;
+                for(var i = 0 ; i < this.groupList.length ; i++){
+                    this.groupList[i].check = false;
                 }
                 for(var i = 0 ; i < this.result.length ; i++){
-                    for(var j = 0 ; j < this.roleList.length ; j++){
-                        if(this.result[i].id == this.roleList[j].id){
-                            this.roleList[j].check = true;
+                    for(var j = 0 ; j < this.groupList.length ; j++){
+                        if(this.result[i].id == this.groupList[j].id){
+                            this.groupList[j].check = true;
                         }
                     }
                 }
-               this.roleList.push()
+               this.groupList.push()
             }
             
         },
@@ -301,7 +234,9 @@ export default {
                     }
                     
                 }
-
+                .checkboxLabel:hover{
+                    background:rgba(240,240,240,0.9);
+                }
                 .ivu-collapse-content{
                     padding:0px;
                     .ivu-collapse-content-box{
@@ -365,9 +300,6 @@ export default {
                             padding-left:0px;
                         }
                     }
-                }
-                .checkboxLabel:hover{
-                    background:rgba(240,240,240,0.9);
                 }
                 .unCheckboxGroupWrap{
                     .checkboxLabel{

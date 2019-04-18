@@ -8,7 +8,7 @@
         <div class="selector flex">
             <div class="selector_left flex flex-direction-column">
                 <Input v-model="fuzzy" icon="md-search" placeholder="请输入" clearable @on-enter="enter"/>
-                <div class="flex-1 selector_left_content">
+                <div class="flex-1 selector_left_content" v-show="config.model == 1">
                     <Tabs type="card" :value="value" :animated="false" @on-click="changeTab" v-if="showTab()">
                         <TabPane label="组织结构" name="org" v-if="condition.org">
                             <org :config="config" ref="org" @org-check-change=checkChange></org>
@@ -32,6 +32,9 @@
                     <group ref="group" @group-check-change=checkChange v-if="showTabForOne('group')"></group>
                     <post ref="post" @post-check-change=checkChange v-if="showTabForOne('post')"></post>
                 </div>
+                <div v-show="config.model == 2" class="selector_left_content">
+                    <list ref="list" @list-check-change="checkChange"></list>
+                </div>
             </div>
             <div class="selector_right flex flex-direction-column">
                 <div class="selector_right_text flex">
@@ -40,12 +43,12 @@
                 </div>
                 <div class="resultWrap flex-1">
                     <div class="resultBox flex flex-align-items" v-for="(item , i) in result" :key="i">
-                        <i class="ivu-icon ivu-icon-ios-folder" v-if="item.type == 1 || item.type == 6"></i> 
-                        <i class="ivu-icon ivu-icon-md-person" v-if="item.type == 3 || item.type == 4 || item.type == 5"></i> 
-                        <span class="iconWrap" v-if="item.type == 2">{{getShortName(item.label)}}</span> 
+                        <i class="ivu-icon ivu-icon-ios-folder" v-if="item.type == 0 || item.type == 5"></i> 
+                        <i class="ivu-icon ivu-icon-md-person" v-if="item.type == 2 || item.type == 3 || item.type == 4"></i> 
+                        <span class="iconWrap" v-if="item.type == 1">{{getShortName(item.label)}}</span> 
                         <div class="resultName flex-1">{{item.label}}</div>
                         <Icon type="ios-close" @click="deleteResult(i)"/>
-                        {{item.type}}
+                        <!-- {{item.type}} -->
                     </div>
                 </div>
             </div>
@@ -63,6 +66,7 @@ import role from './components/role.vue'
 import group from './components/group.vue'
 import post from './components/post.vue'
 import charge from './components/charge.vue'
+import list from './components/list.vue'
 export default {
     name: 'index',
      data(){
@@ -93,7 +97,8 @@ export default {
         role,
         charge,
         group,
-        post
+        post,
+        list
     },
     methods : {
         /**
@@ -101,7 +106,18 @@ export default {
         */
         open(config) {
             this.config = config;
+            this.config.model = this.config.model ? this.config.model : 1;
             this.config.type = this.config.type ? this.config.type : 1;
+            if(this.config.model == 1 && !this.config.deptId) {
+                common.toastMsg('参数出错');
+                return; 
+            }
+            if(this.config.model == 2 && !this.config.roleList){
+                common.toastMsg('参数出错');
+                return;
+            } 
+            this.config.roleList = this.config.roleList ? this.config.roleList : [];
+
             this.config.title = this.config.title ? this.config.title : '选择成员';
             this.config.muliteChoice = this.config.muliteChoice ? this.config.muliteChoice : 1
             this.result = this.config.data ? this.config.data : [];
@@ -112,7 +128,6 @@ export default {
                 }
             }
             this.selectModal = true;
-            
             this.initCondition();
         },
         showTab(){
@@ -138,7 +153,6 @@ export default {
             if(!this.showTab()){
                 return this.condition[key]
             }
-            
         },
         enter(){
             if(this.value == 'org'){
@@ -183,10 +197,14 @@ export default {
                 }
             }
             this.value = this.condition.org ? 'org' : this.condition.role ? 'role' : this.condition.group ? 'group' : this.condition.post ? 'post' : 'charge' 
-            this.$nextTick(function(){
-                this.initConditionData();
-            })  
             
+            this.$nextTick(function(){
+                if(this.config.model == 1){
+                    this.initConditionData(); 
+                }else if(this.config.model == 2){
+                    this.$refs.list.init(this.config , this.condition , this.fuzzy , JSON.parse(JSON.stringify(this.result)));
+                }
+            })  
         },
         /**
          * 初始化选择器中第一个条件的事件
@@ -233,6 +251,7 @@ export default {
                 }else{ 
                     if(type == 0 || type == 1){
                         this.$refs.org.allStatus = false;
+                        this.$refs.list.allStatus = false;
                     }
                     for(var i = 0 ; i < this.result.length ; i++){
                         if(item.id == this.result[i].id){
@@ -252,19 +271,24 @@ export default {
                     this.result[0] = param;
                 }
             }
-            if(type == 0) { // 部门状态发生改变时
-                this.$refs.org.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 0)
-            }else if(type == 1) { // 人员状态发生改变时
-                this.$refs.org.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 1)
-            }else if(type == 4) { // 角色状态发生改变时
-                this.$refs.role.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 4)
-            }else if(type == 3) { // v群组状态发生改变时
-                this.$refs.group.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 3)
-            }else if(type == 2) { // 岗位状态发生改变时 
-                this.$refs.post.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 2)
-            }else if(type == 5) { // 主管发生改变时
-                this.$refs.charge.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 5)
+            if(this.config.model == 1){
+                if(type == 0) { // 部门状态发生改变时
+                    this.$refs.org.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 0)
+                }else if(type == 1) { // 人员状态发生改变时
+                    this.$refs.org.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 1)
+                }else if(type == 4) { // 角色状态发生改变时
+                    this.$refs.role.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 4)
+                }else if(type == 3) { // v群组状态发生改变时
+                    this.$refs.group.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 3)
+                }else if(type == 2) { // 岗位状态发生改变时 
+                    this.$refs.post.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 2)
+                }else if(type == 5) { // 主管发生改变时
+                    this.$refs.charge.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 5)
+                }
+            }else if(this.config.model == 2){
+                this.$refs.list.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 1)
             }
+            
         }, 
         clearResult(){
             for(var i = 0 ; i < this.result.length ; i++){
@@ -273,20 +297,27 @@ export default {
                 i--;
                 if(info.type == 0 || info.type == 1){
                     this.$refs.org.allStatus = false;
+                    this.$refs.list.allStatus = false;
                 }
-                if( info.type == 0 ) { //删除部门
-                    this.$refs.org.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 0)
-                }else if( info.type == 1 ) {
-                    this.$refs.org.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 1)
-                }else if(info.type == 4){
-                    this.$refs.role.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 4)
-                }else if(info.type == 3){
-                    this.$refs.group.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 3)
-                }else if(info.type == 2){
-                    this.$refs.post.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 2)
-                }else if(info.type == 5){
-                    this.$refs.charge.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 5)
+
+                if(this.config.model == 1) {
+                    if( info.type == 0 ) { //删除部门
+                        this.$refs.org.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 0)
+                    }else if( info.type == 1 ) {
+                        this.$refs.org.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 1)
+                    }else if(info.type == 4){
+                        this.$refs.role.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 4)
+                    }else if(info.type == 3){
+                        this.$refs.group.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 3)
+                    }else if(info.type == 2){
+                        this.$refs.post.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 2)
+                    }else if(info.type == 5){
+                        this.$refs.charge.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 5)
+                    }
+                }else if(this.config.model == 2){
+                    this.$refs.list.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 1)
                 }
+                
             }
         },
         /**
@@ -295,19 +326,24 @@ export default {
         deleteResult(index){
             var info = JSON.parse(JSON.stringify(this.result[index]))
             this.result.splice(index, 1);
-            if( info.type == 0 ) { //删除部门
-                this.$refs.org.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 0)
-            }else if( info.type == 1 ) {
-                this.$refs.org.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 1)
-            }else if(info.type == 4){
-                    this.$refs.role.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 4)
-            }else if(info.type == 3){
-                this.$refs.group.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 3)
-            }else if(info.type == 2){
-                this.$refs.post.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 2)
-            }else if(info.type == 5){
-                this.$refs.charge.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 5)
+            if(this.config.model == 1){
+                if( info.type == 0 ) { //删除部门
+                    this.$refs.org.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 0)
+                }else if( info.type == 1 ) {
+                    this.$refs.org.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 1)
+                }else if(info.type == 4){
+                        this.$refs.role.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 4)
+                }else if(info.type == 3){
+                    this.$refs.group.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 3)
+                }else if(info.type == 2){
+                    this.$refs.post.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 2)
+                }else if(info.type == 5){
+                    this.$refs.charge.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 5)
+                }
+            }else if(this.config.model == 2){
+                this.$refs.list.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 1)
             }
+            
         },
         submit(){
             if(this.result.length == 0) {
@@ -333,133 +369,5 @@ export default {
 </script>
 
 <style lang="scss">
-    @import '~assets/css/public.scss';
-    @import '~assets/css/flex.scss';
-    .selectComponent{
-        .ivu-modal-body{
-            min-height:450px;
-            position:relative;
-        }
-        .ivu-modal-body:before{
-            content: "";
-            height: 451px;
-            left: 55%;
-            position: absolute;
-            top: 0px;
-            bottom: 0px;
-            border-right: 1px solid #eaeaea;
-        }
-        .selector_right_text{
-            font-size:14px;
-            .clear-wrap{
-                color: #666;
-                font-size: 12px;
-                margin-left: -4px;
-                cursor:pointer;
-                .ivu-icon{
-                    font-size: 18px;
-                }
-            }
-        }
-        .overflowYAuto{
-            overflow-y:auto;
-        }
-        .selector{
-            height: 418px;
-            .selector_left{
-                width: 55%;
-                padding-right: 10px;
-                .selector_left_content{
-                    margin-top:15px;
-                }
-                .ivu-tabs{
-                    height:100%;
-                    display: box;
-                    display: -webkit-box;
-                    display: -moz-box;
-                    display: -ms-flexbox;
-                    display: -webkit-flex;
-                    display: flex;
-                    -webkit-box-flex-direction: row;
-                    -moz-flex-direction: row;
-                    -mx-flex-direction: row;
-                    -webkit-flex-direction: row;
-                    flex-direction: row;
-                    display: box;
-                    display: -webkit-box;
-                    display: -moz-box;
-                    display: -ms-flexbox;
-                    display: -webkit-flex;
-                    -webkit-box-orient: vertical;
-                    -webkit-flex-direction: column;
-                    -moz-flex-direction: column;
-                    -ms-flex-direction: column;
-                    -o-flex-direction: column;
-                    flex-direction: column;
-                    .ivu-tabs-bar{
-                        margin-bottom:10px;
-                    }
-                    .ivu-tabs-content{
-                        -webkit-box-flex: 1;
-                        -moz-box-flex: 1;
-                        -webkit-flex: 1;
-                        -ms-flex: 1;
-                        flex: 1;
-                        .ivu-tabs-tabpane{
-                            height:100%;
-                        }
-                    }
-                }
-                .ivu-collapse-content{
-                    padding:0px;
-                    .ivu-collapse-content-box{
-                        padding:5px 0px;
-                    }
-                }
-            }
-            .selector_right{
-                width: 45%;
-                padding-left: 15px;
-                .resultWrap{
-                    overflow-y:auto;
-                    border: 1px solid #efefef;
-                    border-radius: 4px;
-                    margin: 8px 0px 0px 0px;
-                    .resultBox{
-                        padding: 8px 12px 5px 12px;
-                        font-size: 14px;
-                        .ivu-icon-ios-folder , .ivu-icon-md-person{
-                            font-size: 18px;
-                            margin-right: 8px;
-                            color: #73c8ea;
-                        }
-                        .ivu-icon-ios-close{
-                            font-size:18px;
-                        }
-                        .iconWrap{
-                            background: #efefef;
-                            display: inline-block;
-                            width: 28px;
-                            height: 28px;
-                            line-height: 30px;
-                            text-align: center;
-                            border-radius: 50%;
-                            color: #44ace8;
-                            margin-right: 8px;
-                            font-size:10px;
-                            cursor:pointer;
-                        }
-                    }
-                    .resultBox:hover{
-                        background:#eaeaea;
-                        .iconWrap{
-                            background:rgba(255,255,255,0.9)
-                        }
-                    }
-
-                }
-            }
-
-        }
-    }
+    @import './assets/select.scss';
 </style>

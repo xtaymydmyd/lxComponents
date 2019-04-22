@@ -55,7 +55,8 @@
         </div>
         <div slot="footer">
             <Button @click="cancel">取消</Button>
-            <Button type="primary" @click="submit">确定</Button>
+            <Button type="primary" @click="submit" :disabled="result.length == 0" v-if="config.require == 2">确定</Button>
+            <Button type="primary" @click="submit" v-if="config.require == 1">确定</Button>
         </div>
     </Modal>
 </template>
@@ -108,6 +109,7 @@ export default {
             this.config = config;
             this.config.model = this.config.model ? this.config.model : 1;
             this.config.type = this.config.type ? this.config.type : 1;
+            this.config.require = this.config.require ? this.config.require : 1;
             if(this.config.model == 1 && !this.config.deptId) {
                 common.toastMsg('参数出错');
                 return; 

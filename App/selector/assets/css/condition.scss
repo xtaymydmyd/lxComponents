@@ -1,0 +1,71 @@
+@import '~selector/assets/css/public.scss';
+.conditionIndex{
+    height:100%;
+    .weui-cells{
+        margin-top:10px;
+    }
+    .list-wrap{
+        margin-top:0px;
+        .list{
+            background:white;
+            padding: 10px 15px;
+            .left{
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
+                background: #eaeaea;
+                border-radius: 50%;
+                text-align: center;
+                line-height: 40px;
+                margin-right: 10px;
+                color :$theme;
+            }
+        }
+    }
+    .searchWrap{
+        position:relative;
+        height:44px;
+    }
+    .weui-search-bar__label{
+        top : 2px;
+    }
+
+    
+}
+.selectMain{
+    .arrow{
+        .arrow_img{
+            height: 12px;
+            margin-bottom: -2px;
+            margin-right: 3px;
+        }
+        .arrow_text{
+            font-size: 12px;
+            color:$theme;
+        }
+    }
+    .disableArrow{
+        .disableArrow_img{
+            height: 12px;
+            margin-bottom: -2px;
+            margin-right: 3px;
+        }
+        .disableArrow_text{
+            font-size: 12px;
+            color:#b3daf7;
+        }
+    }
+    .selectionStaffList .list-wrap .list .memberLeft{
+        background:$theme;
+        color:white;
+        font-size:14px;
+    }
+    .headerWrap{
+        width: 34px;
+        height: 34px;
+        background-color:$theme;
+        color:white;
+        font-size:12px;
+        border-radius:50%;
+    }
+}

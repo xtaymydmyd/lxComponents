@@ -1,0 +1,73 @@
+@import "~selector/assets/css/public.scss";
+@import "~assets/css/1px.scss";
+
+.selectMain{
+    height:100%;
+    .upLevel{
+        color : $theme;
+    }
+    .personWrap{
+        .headImg{
+            height:30px;
+        }
+        .name{
+            font-size: 12px;
+            margin-top: 4px;
+            width: 100%;
+            text-align:center;
+        }
+    }
+    .result{
+        background: #fafafa;
+        .userWrap{
+            min-height:58px;
+            padding: 5px 5px;
+            width:100%;
+            box-sizing:border-box;
+        }
+        .resultDeptIcon{
+            width: 40px;
+            height: 40px;
+            font-size: 18px;
+            background: #eaeaea;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            margin-right: 10px;
+            margin-bottom:2px;
+            color : $theme;
+        }
+        .userWrapBlock{
+            min-height: 50px;
+            overflow-x: scroll;
+            .block{
+                float:left;
+                width:55px;
+                >div{
+                    width:55px;
+                }
+                img{
+                    width:30px;
+                    height:30px;
+                }
+
+            }
+        }
+        .operaBtns{
+            height:50px;
+            line-height:50px;
+            font-weight: bold;
+            font-size: 16px;
+            .upLevel{
+                width:50%;
+                text-align:center;
+            }
+            .confirmBtn{
+                text-align:center;
+                background:$theme;
+                color : white;
+            }
+        }
+    }
+    
+}

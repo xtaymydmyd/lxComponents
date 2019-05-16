@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <% include('../../assets/art/meta.art') %>
+    <% include('../../assets/art/dll.art') %>
+    <script src=static/js/common.js></script>
+    <title></title>
+</head>
+
+<body >
+    <div id="app"></div>
+</body>
+
+</html>

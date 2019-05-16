@@ -1,0 +1,70 @@
+@import '~selector/assets/css/public.scss';
+.selectionStaffList{
+    height:100%;
+    .vux-header{
+        background-color:auto;
+    }
+    .weui-cells{
+        margin-top:10px;
+    }
+    .list-wrap{
+        .list{
+            background:white;
+            padding: 10px 15px;
+            .left{
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
+                background: #eaeaea;
+                border-radius: 50%;
+                text-align: center;
+                line-height: 40px;
+                margin-right: 10px;
+                color :$theme;
+            }
+            .select-left{
+                width:40px;
+                position:relative;
+                img{
+                    width:20px;
+                }
+                .weui_icon_circle_disabled{
+                    display: inline-block;
+                    width: 21px;
+                    height: 21px;
+                    border-radius: 50%;
+                    background: #efefef;
+                    border: 1px solid #dfdfdf;
+                    position: absolute;
+                    box-sizing: border-box;
+                    margin-top: 1px;
+                    left: 5px;
+                }
+                .weui_icon_circle_empty{
+                    display: inline-block;
+                    width: 21px;
+                    height: 21px;
+                    border-radius: 50%;
+                    background: #fff;
+                    border: 1px solid #fff;
+                    position: absolute;
+                    box-sizing: border-box;
+                    margin-top: 1px;
+                    left: 5px;
+                }
+            }
+        }
+    }
+    
+    .selectionStaffContainer{
+        padding: 10px 0px;
+    }
+    .searchWrap{
+        position:relative;
+        height:44px;
+    }
+    .weui-search-bar__label{
+        top : 6px;
+    }
+    
+}

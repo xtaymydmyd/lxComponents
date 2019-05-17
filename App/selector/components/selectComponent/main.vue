@@ -89,6 +89,7 @@ export default {
         init(){
             var _this = this;
             this.query = this.$route.query;
+            console.log(typeof this.query.condition == 'string')
             this.mainCondition = [{
                 title : this.query.title,
                 condition : typeof this.query.condition == 'string' ? [this.query.condition] : this.query.condition,

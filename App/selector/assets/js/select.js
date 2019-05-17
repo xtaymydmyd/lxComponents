@@ -30,6 +30,7 @@ const selectMethod = {
      * 判断是否从选择人员页面
     */
     isFromSelectStaff() {
+        debugger
         var flag = common.sessionGet('selectionStaffFlag')
         sessionStorage.removeItem('selectionStaffFlag')
         return flag
@@ -38,10 +39,18 @@ const selectMethod = {
      * 获取结果
     */
     getResult() {
-        var result = common.sessionGet('selectionStaffUserList')
-        sessionStorage.removeItem('selectionStaffUserList')
-        // sessionStorage.removeItem('selectionStaffDeptIdList')
-        return result
+        debugger
+        var withUser = common.sessionGet('withUser')
+        var result
+        if (withUser == '1') {
+            result = common.sessionGet('selectionStaffUserList')
+            sessionStorage.removeItem('selectionStaffUserList')
+            return result
+        } else {
+            result = common.sessionGet('selectionStaffDeptList')
+            sessionStorage.removeItem('selectionStaffDeptList')
+            return result
+        }
     }
 }
 

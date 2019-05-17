@@ -146,8 +146,10 @@ export default {
          * 保存人员列表
         */
         saveUserList(){
+            debugger
             common.sessionSet("selectionStaffFlag" , 1);
-            if(this.withUser == 1){
+            common.sessionSet("withUser" , this.withUser);
+            if(this.withUser == 1){ 
                 var userListEdit = common.sessionGet("selectionStaffUserListEdit");
                 common.sessionSet("selectionStaffUserList" , userListEdit);
                 sessionStorage.removeItem("selectionStaffUserListEdit");

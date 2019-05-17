@@ -16,8 +16,8 @@
                     >
                     <div class="select-left" 
                         @click="selectStaff(item , index , 'depart')" 
-                        v-if="muliteChoice != 2 " >
-                        <i class="weui-icon weui_icon_circle weui-icon-circle" v-if=" item.nodeType != '0'" :class="{ 'weui_icon_success weui-icon-success' : item.selected , ' weui_icon_circle weui-icon-circle' : !item.selected }" style="" ></i>
+                        v-if="(withUser == 2 && item.nodeType != '0') " >
+                        <i class="weui-icon weui_icon_circle weui-icon-circle" v-if="item.nodeType != '0'" :class="{ 'weui_icon_success weui-icon-success' : item.selected , ' weui_icon_circle weui-icon-circle' : !item.selected }" style="" ></i>
                     </div>
                     <div class="flex flex-1 flex-align-items" >
                         <div class="left">
@@ -46,8 +46,6 @@
                     </div>
                     <div class="flex flex-1 flex-align-items">
                         <div class="left memberLeft flex flex-align-items flex-justify-content">
-                            <!-- <img src="~selector/assets/img/headmr.png" class="icon" style="width:100%;height:100%;" v-if="item.headImgUrl == null || item.headImgUrl == ''">
-                            <img :src="HostSource + item.headImgUrl " class="icon headImg" style="width:100%;height:100%;" v-if="!(item.headImgUrl == null || item.headImgUrl == '')"> -->
                             {{getShortName(item.name)}}
                         </div> 
                         <div class="name flex-1 ">{{item.name}}</div>

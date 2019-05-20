@@ -146,7 +146,6 @@ export default {
          * 保存人员列表
         */
         saveUserList(){
-            debugger
             common.sessionSet("selectionStaffFlag" , 1);
             common.sessionSet("withUser" , this.withUser);
             if(this.withUser == 1){ 

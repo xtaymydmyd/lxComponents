@@ -30,7 +30,6 @@ const selectMethod = {
      * 判断是否从选择人员页面
     */
     isFromSelectStaff() {
-        debugger
         var flag = common.sessionGet('selectionStaffFlag')
         sessionStorage.removeItem('selectionStaffFlag')
         return flag
@@ -39,7 +38,6 @@ const selectMethod = {
      * 获取结果
     */
     getResult() {
-        debugger
         var withUser = common.sessionGet('withUser')
         var result
         if (withUser == '1') {

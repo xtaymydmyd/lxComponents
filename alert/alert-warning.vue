@@ -47,7 +47,7 @@
             value: Boolean,
             text : {
                 type : String ,
-                default : '操作成功'
+                default : '警告'
             },
             hideOnBlur: {//是否在点击遮罩时自动关闭弹窗
                 type: Boolean,

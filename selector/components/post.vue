@@ -1,6 +1,6 @@
 <template>
     <div class="roleContentWrap overflowYAuto" :style="{height : height}">
-       <div  v-for="(list , i ) in postList" :key="list.id + '' + i" class="flex flex-align-items"  @click="changeCheck(i , 2)">
+        <div  v-for="(list , i ) in postList" :key="list.id + '' + i" class="flex flex-align-items"  @click="changeCheck(i , 2)">
             <label class="checkboxLabel flex flex-align-items ivu-checkbox-wrapper ivu-checkbox-group-item ivu-checkbox-default">
                 <span class="ivu-checkbox" :class="{'ivu-checkbox-checked' : list.check}">
                     <span class="ivu-checkbox-inner"></span> 
@@ -20,6 +20,7 @@ export default {
     name: 'index',
      data(){
         return {
+           
             config : {
                 parentDetpIdList : [],
                 condition : []
@@ -37,7 +38,8 @@ export default {
             condition : {},
             result : [],
             fuzzy : '',
-            postList : []
+            postList : [],
+            memList : []
         }
     },
     methods : {
@@ -74,6 +76,7 @@ export default {
             }
             return num > 1 ? true : false
         },
+        
         /**
          * 获取群组列表
         */
@@ -107,8 +110,25 @@ export default {
             }
             this.postList.push()
         },
-        changeCheck(index){ 
-            this.$emit("post-check-change", this.postList[index] , this.postList[index].check , 2)
+         /**
+         * 人员初始化选中
+        */
+        initMemCheck(){
+            for(var i = 0 ; i < this.result.length ; i++){
+                for(var j = 0 ; j < this.memList.length ; j++){
+                    if(this.result[i].id == this.memList[j].id){
+                        this.memList[j].check = true; 
+                    }
+                }
+            }
+        },
+        changeCheck(index , type){ 
+            if(type == 2){
+                this.$emit("post-check-change", this.postList[index] , this.postList[index].check , 2)
+            }else if(type == 1){
+                this.$emit("org-check-change", this.memList[index] , this.memList[index].check , 1)
+            }
+            
         },
         /**
          * 设置选中

@@ -44,7 +44,7 @@
                 </div>
             </div>
             <!-- 部门列表（单选 或 下级列表） -->
-            <div v-if="config.type == 2" >
+            <div v-if="config.type == 2 || config.type == 3" >
                 <div v-for="item  in orgList" :key="item.id" class="flex checkboxWrap uncheckboxWrap">
                     <div :label="item.id" class="checkboxLabel flex-1 flex-align-items"> 
                         <Icon type="ios-folder" />
@@ -145,7 +145,7 @@ export default {
                     this.changeCheck(j , 1)
                 }
             }
-            if(this.config.type == 2){
+            if(this.config.type == 2 || this.config.type == 3){
                 for(var k = 0 ; k < this.memList.length ; k++){
                     this.memList[k].check = !this.allStatus;
                     this.changeCheck(k , 1)

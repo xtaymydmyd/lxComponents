@@ -48,13 +48,15 @@
                         <span class="iconWrap" v-if="item.type == 1">{{getShortName(item.label)}}</span> 
                         <div class="resultName flex-1">{{item.label}}</div>
                         <Icon type="ios-close" @click.native="deleteResult(i)"/>
+                        <!-- {{item.type}} -->
                     </div>
                 </div>
             </div>
         </div>
         <div slot="footer">
             <Button @click="cancel">取消</Button>
-            <Button type="primary" @click="submit" :disabled="result.length == 0" v-if="config.require == 2">确定</Button>
+            <Button type="primary" @click="submit"  v-if="config.require == 2">确定</Button>
+            <!-- :disabled="result.length == 0" -->
             <Button type="primary" @click="submit" v-if="config.require == 1">确定</Button>
         </div>
     </Modal>
@@ -183,6 +185,7 @@ export default {
                 this.$refs.role.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 3)
             }
             if(this.condition.group){
+                this.$refs.group.init(this.config , this.condition , this.fuzzy , JSON.parse(JSON.stringify(this.result)))
                 this.$refs.group.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 4)
             }
             if(this.condition.post){
@@ -283,6 +286,7 @@ export default {
                     this.$refs.org.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 0)
                 }else if(type == 1) { // 人员状态发生改变时
                     this.$refs.org.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 1)
+                    this.$refs.group.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 1)
                 }else if(type == 4) { // 角色状态发生改变时
                     this.$refs.role.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 4)
                 }else if(type == 3) { // v群组状态发生改变时
@@ -340,8 +344,9 @@ export default {
                     this.$refs.org.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 0)
                 }else if( info.type == 1 ) {
                     this.$refs.org.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 1)
+                    this.$refs.group.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 1)
                 }else if(info.type == 4){
-                        this.$refs.role.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 4)
+                    this.$refs.role.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 4)
                 }else if(info.type == 3){
                     this.$refs.group.setCheckStatus(JSON.parse(JSON.stringify(this.result)) , 3)
                 }else if(info.type == 2){
@@ -354,9 +359,9 @@ export default {
             }
         },
         submit(){
-            if(this.result.length == 0) {
-                return;
-            }
+            // if(this.result.length == 0) {
+            //     return;
+            // }
             this.selectModal = false;
             this.$emit("on-submit" , JSON.parse(JSON.stringify(this.result)));
         },

@@ -92,6 +92,7 @@ export default {
             showLoadingMore : true,
             total : 0,
             result : [],
+            topLevelInfo : {},
             allStatus : false
         }
     },
@@ -102,11 +103,15 @@ export default {
             this.height = this.showTab() ? "329px" : '370px';
             this.result = result;
             this.fuzzy = fuzzy;
+            this.config.deptList;
 
-            this.orgList = [];
-            this.memList = [];
-
+            this.topLevelInfo = this.config.deptList;
             this.levelList = [];
+            // this.levelList[0] = {
+            //     name : this.topLevelInfo[0].name,
+            //     id : this.topLevelInfo[0].id
+            // }
+            // this.getLevelData()
 
             this.levelList[0] = {
                 name : '组织结构',
@@ -173,6 +178,7 @@ export default {
                         this.orgList.push()
                         this.initDeptCheck();
                         this.showLoadingMore = false;
+                        // this.getLevelData()
                     }
                 } else {
                     common.toastMsg(res.message) 
@@ -201,23 +207,21 @@ export default {
          * 修改等级数据
         */
         changeLevelItem(i){
-            this.orgList = [];
-            this.memList = [];
-
             this.allStatus = false;
             this.levelList.splice(i+1, (this.levelList.length - i));
             if(this.levelList.length == 1){
+                // this.levelList[0] = {
+                //     name : this.topLevelInfo[0].name,
+                //     id : this.topLevelInfo[0].id
+                // }
+                // this.levelList.push()
                 this.levelList[0] = {
                     name : '组织结构',
                     id : -1
                 }
-                this.orgList = [];
-                this.memList = [];
                 this.getDeptInfo();
-            }else{
-                this.getLevelData();
             }
-            
+            this.getLevelData();
         },
         /**
          * 修改等级

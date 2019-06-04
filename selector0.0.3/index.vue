@@ -47,7 +47,8 @@
                         <i class="ivu-icon ivu-icon-md-person" v-if="item.type == 2 || item.type == 3 || item.type == 4"></i> 
                         <span class="iconWrap" v-if="item.type == 1">{{getShortName(item.label)}}</span> 
                         <div class="resultName flex-1">{{item.label}}</div>
-                        <Icon type="ios-close" @click.native="deleteResult(i)"/>
+                        <Icon type="ios-close" @click="deleteResult(i)"/>
+                        <!-- {{item.type}} -->
                     </div>
                 </div>
             </div>

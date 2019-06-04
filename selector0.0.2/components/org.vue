@@ -175,7 +175,6 @@ export default {
                             }
                         }
                         this.orgList = list;
-                        this.orgList.push()
                         this.initDeptCheck();
                         this.showLoadingMore = false;
                         // this.getLevelData()

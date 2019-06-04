@@ -1,5 +1,5 @@
 @import '~assets/css/public.scss';
-@import '~assets/css/flex.scss';
+@import './flex.scss';
 .selectComponent{
     >div{
         z-index: 99999999 !important;

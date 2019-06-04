@@ -1,7 +1,13 @@
 <template>
     <div class="contentOrgWrap flex flex-direction-column" :style="{height : height}">
         <div class="orgSelectorNavbar" v-show="levelList.length > 1">
-            <div v-for="(list , i) in levelList" :key="i" class="orgNav flex flex-align-items" v-show="levelList.length > 1" :class="{ 'active' : i == ( levelList.length - 1 ) , 'arrow ivu-icon' : i < (levelList.length - 1 )}" @click="changeLevelItem(i)">
+            <div 
+                v-for="(list , i) in levelList" 
+                :key="i" 
+                class="orgNav flex flex-align-items" 
+                v-show="levelList.length > 1" 
+                :class="{ 'active' : i == ( levelList.length - 1 ) , 'arrow ivu-icon' : i < (levelList.length - 1 )}" 
+                @click="changeLevelItem(i)">
                 <div class="orgSelectorNavBarName">{{list.name}}</div> 
                 <!-- <Icon type="ios-arrow-forward" v-show="i < (levelList.length - 1 )"/> -->
             </div>
@@ -97,6 +103,20 @@ export default {
             this.height = this.showTab() ? "329px" : '370px';
             this.result = result;
             this.fuzzy = fuzzy;
+            this.config.deptList;
+
+            this.topLevelInfo = this.config.deptList;
+            this.levelList = [];
+            // this.levelList[0] = {
+            //     name : this.topLevelInfo[0].name,
+            //     id : this.topLevelInfo[0].id
+            // }
+            // this.getLevelData()
+
+            this.levelList[0] = {
+                name : '组织结构',
+                id : -1
+            }
             this.getDeptInfo();
         },
         showTab(){
@@ -143,17 +163,21 @@ export default {
         getDeptInfo(){
             var url = constGlobal.HostContact + 'deptList/search';
             var param = {
-                deptIdList : this.config.deptId
+                deptIdList : this.config.deptList
             }
             http.apiPost(url, param).then(res => {
                 if (res.status == 0) {
-                    if(res.data && res.data.length == 1){
-                        this.topLevelInfo = res.data[0]
-                        this.levelList[0] = {
-                            name : res.data[0].name,
-                            id : res.data[0].id
+                    if(res.data){
+                        var list = res.data;
+                        if(this.condition.org){
+                            for(var i = 0 ; i < list.length ; i++){
+                                list[i].check = false;
+                            }
                         }
-                        this.getLevelData()
+                        this.orgList = list;
+                        this.initDeptCheck();
+                        this.showLoadingMore = false;
+                        // this.getLevelData()
                     }
                 } else {
                     common.toastMsg(res.message) 
@@ -182,17 +206,19 @@ export default {
          * 修改等级数据
         */
         changeLevelItem(i){
-            if(i == ( this.levelList.length - 1 )){
-                return;
-            }
             this.allStatus = false;
-            this.levelList.splice(i, (this.levelList.length - i));
-            if(this.levelList.length == 0){
+            this.levelList.splice(i+1, (this.levelList.length - i));
+            if(this.levelList.length == 1){
+                // this.levelList[0] = {
+                //     name : this.topLevelInfo[0].name,
+                //     id : this.topLevelInfo[0].id
+                // }
+                // this.levelList.push()
                 this.levelList[0] = {
-                    name : this.topLevelInfo.name,
-                    id : this.topLevelInfo.id
+                    name : '组织结构',
+                    id : -1
                 }
-                this.levelList.push()
+                this.getDeptInfo();
             }
             this.getLevelData();
         },

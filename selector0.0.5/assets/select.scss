@@ -1,0 +1,132 @@
+@import '~assets/css/public.scss';
+@import './flex.scss';
+.selectComponent{
+    >div{
+        z-index: 99999999 !important;
+    }
+    .ivu-modal-body{
+        min-height:450px;
+        position:relative;
+    }
+    .ivu-modal-body:before{
+        content: "";
+        height: 451px;
+        left: 55%;
+        position: absolute;
+        top: 0px;
+        bottom: 0px;
+        border-right: 1px solid #eaeaea;
+    }
+    .selector_right_text{
+        font-size:14px;
+        .clear-wrap{
+            color: #666;
+            font-size: 12px;
+            margin-left: -4px;
+            cursor:pointer;
+            .ivu-icon{
+                font-size: 18px;
+            }
+        }
+    }
+    .overflowYAuto{
+        overflow-y:auto;
+    }
+    .selector{
+        height: 418px;
+        .selector_left{
+            width: 55%;
+            padding-right: 10px;
+            .selector_left_content{
+                margin-top:15px;
+            }
+            .ivu-tabs{
+                height:100%;
+                display: box;
+                display: -webkit-box;
+                display: -moz-box;
+                display: -ms-flexbox;
+                display: -webkit-flex;
+                display: flex;
+                -webkit-box-flex-direction: row;
+                -moz-flex-direction: row;
+                -mx-flex-direction: row;
+                -webkit-flex-direction: row;
+                flex-direction: row;
+                display: box;
+                display: -webkit-box;
+                display: -moz-box;
+                display: -ms-flexbox;
+                display: -webkit-flex;
+                -webkit-box-orient: vertical;
+                -webkit-flex-direction: column;
+                -moz-flex-direction: column;
+                -ms-flex-direction: column;
+                -o-flex-direction: column;
+                flex-direction: column;
+                .ivu-tabs-bar{
+                    margin-bottom:10px;
+                }
+                .ivu-tabs-content{
+                    -webkit-box-flex: 1;
+                    -moz-box-flex: 1;
+                    -webkit-flex: 1;
+                    -ms-flex: 1;
+                    flex: 1;
+                    .ivu-tabs-tabpane{
+                        height:100%;
+                    }
+                }
+            }
+            .ivu-collapse-content{
+                padding:0px;
+                .ivu-collapse-content-box{
+                    padding:5px 0px;
+                }
+            }
+        }
+        .selector_right{
+            width: 45%;
+            padding-left: 15px;
+            .resultWrap{
+                overflow-y:auto;
+                border: 1px solid #efefef;
+                border-radius: 4px;
+                margin: 8px 0px 0px 0px;
+                .resultBox{
+                    padding: 8px 12px 5px 12px;
+                    font-size: 14px;
+                    .ivu-icon-ios-folder , .ivu-icon-md-person{
+                        font-size: 18px;
+                        margin-right: 8px;
+                        color: #73c8ea;
+                    }
+                    .ivu-icon-ios-close{
+                        font-size:18px;
+                    }
+                    .iconWrap{
+                        background: #efefef;
+                        display: inline-block;
+                        width: 28px;
+                        height: 28px;
+                        line-height: 30px;
+                        text-align: center;
+                        border-radius: 50%;
+                        color: #44ace8;
+                        margin-right: 8px;
+                        font-size:10px;
+                        cursor:pointer;
+                    }
+                }
+                .resultBox:hover{
+                    background:#eaeaea;
+                    .iconWrap{
+                        background:rgba(255,255,255,0.9)
+                    }
+                }
+
+            }
+        }
+
+    }
+}

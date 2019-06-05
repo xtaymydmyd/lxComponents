@@ -1,13 +1,6 @@
 <template>
     <div class="roleContentWrap overflowYAuto flex flex-direction-column" :style="{height : height}">
         <div class="cursorText" @click="removeLevel" v-if="activeIndex >= 0 ">上一级</div>
-        <div class="checkboxAll" v-if="config.muliteChoice == 1 && activeIndex >= 0" @click="changeCheckAllStatus">
-            <label class="ivu-checkbox-wrapper ivu-checkbox-default" >
-                <span class="ivu-checkbox" :class="{'ivu-checkbox-checked' : allStatus}">
-                    <span class="ivu-checkbox-inner"></span> 
-                </span> 全选
-            </label>
-        </div>
         <div class="flex-1 checkboxGroupWrap overflowYAuto"
             v-infinite-scroll="getUserList"
             infinite-scroll-disabled="loading"
@@ -34,7 +27,8 @@
                         v-for="(list , i ) in groupList" 
                         :key="list.id + '' + i" 
                         class="flex flex-align-items checkboxList">
-                        <label class="flex-1 checkboxLabel flex flex-align-items ivu-checkbox-wrapper ivu-checkbox-group-item ivu-checkbox-default">
+                        <label class="flex-1 checkboxLabel flex flex-align-items ivu-checkbox-wrapper ivu-checkbox-group-item ivu-checkbox-default"
+                            @click="changeCheck(i , 3)">
                             <i class="ivu-icon ivu-icon-ios-folder"></i> 
                             <span>{{list.name}}</span>
                         </label>
@@ -44,7 +38,6 @@
             </div>
             <!-- 可选择人员 -->
             <div v-if="activeIndex >= 0">
-                
                 <div 
                     v-for="(info , index) in memList" 
                     :key="info.id" 
@@ -98,8 +91,7 @@ export default {
                 pageNum : 1
             },
             memList : [],
-            activeIndex : -1,
-            allStatus : false
+            activeIndex : -1
         }
     },
     methods : {
@@ -121,38 +113,6 @@ export default {
         removeLevel(){
             this.activeIndex = -1;
             this.loading = true;
-            this.allStatus = false;
-        },
-        // changeCheckAllStatus(){
-        //     this.allStatus = !this.allStatus;
-        //     if(this.config.type == 1){
-        //         for(let j = 0 ; j < this.memList.length ; j++){
-        //             this.memList[j].check = !this.allStatus;
-        //             this.changeCheck(j , 1)
-        //         }
-        //     }
-        //     if(this.config.type == 2 || this.config.type == 3){
-        //         for(var k = 0 ; k < this.memList.length ; k++){
-        //             this.memList[k].check = this.allStatus;
-        //             this.changeCheck(k , 1)
-        //         }
-        //         this.memList.push()
-        //     }
-        // },
-        changeCheckAllStatus(){
-            this.allStatus = !this.allStatus;
-            if(this.config.type == 1){
-                for(let j = 0 ; j < this.memList.length ; j++){
-                    this.memList[j].check = !this.allStatus;
-                    this.changeCheck(j , 1)
-                }
-            }
-            if(this.config.type == 2 || this.config.type == 3){
-                for(var k = 0 ; k < this.memList.length ; k++){
-                    this.memList[k].check = !this.allStatus;
-                    this.changeCheck(k , 1)
-                }
-            }
         },
         showTab(){
             var num = 0
@@ -173,7 +133,6 @@ export default {
             }
             return num > 1 ? true : false
         },
-        
         checkIndexInfo(i){
             this.activeIndex = i;
 
@@ -304,15 +263,7 @@ export default {
                 }
             }
             this.memList.push()
-            // var flag = true;
-            // for(var j = 0 ; j < this.memList.length ; j++){
-            //     if(!this.memList[j].check){
-            //         flag = false
-            //     }
-            // }
-            // if(!flag){
-            //     this.allStatus = false;
-            // }
+            
         },
         getShortName(name){
             return name.slice(name.length - 2 , name.length)

@@ -55,7 +55,8 @@
         </div>
         <div slot="footer">
             <Button @click="cancel">取消</Button>
-            <Button type="primary" @click="submit" :disabled="result.length == 0" v-if="config.require == 2">确定</Button>
+            <Button type="primary" @click="submit"  v-if="config.require == 2">确定</Button>
+            <!-- :disabled="result.length == 0" -->
             <Button type="primary" @click="submit" v-if="config.require == 1">确定</Button>
         </div>
     </Modal>
@@ -259,7 +260,6 @@ export default {
                     if(type == 0 || type == 1){
                         this.$refs.org.allStatus = false;
                         this.$refs.list.allStatus = false;
-                        this.$refs.group.allStatus = false;
                     }
                     for(var i = 0 ; i < this.result.length ; i++){
                         if(item.id == this.result[i].id){

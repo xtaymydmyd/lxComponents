@@ -257,9 +257,15 @@ export default {
                     }
                 }else{ 
                     if(type == 0 || type == 1){
-                        this.$refs.org.allStatus = false;
-                        this.$refs.list.allStatus = false;
-                        this.$refs.group.allStatus = false;
+                        if(this.$refs.org){
+                             this.$refs.org.allStatus = false;
+                        }
+                        if(this.$refs.list){
+                            this.$refs.list.allStatus = false;
+                        }
+                        if(this.$refs.group){
+                             this.$refs.group.allStatus = false;
+                        }
                     }
                     for(var i = 0 ; i < this.result.length ; i++){
                         if(item.id == this.result[i].id){
@@ -307,8 +313,12 @@ export default {
                 this.result.splice(i, 1);
                 i--;
                 if(info.type == 0 || info.type == 1){
-                    this.$refs.org.allStatus = false;
-                    this.$refs.list.allStatus = false;
+                    if(this.$refs.org){
+                        this.$refs.org.allStatus = false;
+                    }
+                    if(this.$refs.list){
+                        this.$refs.list.allStatus = false;
+                    }
                 }
 
                 if(this.config.model == 1) {

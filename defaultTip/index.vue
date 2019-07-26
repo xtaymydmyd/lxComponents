@@ -9,7 +9,16 @@
         <img src="./img/default_star.jpg" alt="" class="default_tip_img" v-if="type == 'star'">
         <img src="./img/default_search.jpg" alt="" class="default_tip_img" v-if="type == 'search'">
 
-        <div class="default_tip_text" v-html="text"></div>
+        <div class="default_tip_text" v-html="text" v-if="text"></div>
+        <div class="default_tip_text" v-if="!text">
+            <span v-if="type == 'content'">暂无内容，去别处逛逛吧〜</span>
+            <span v-if="type == 'dynamic'">还没有动态，快去发布吧〜</span>
+            <span v-if="type == 'error'">出错啦，快看页面飞走啦〜</span>
+            <span v-if="type == 'friend'">还没有好友，赶紧去添加吧〜</span>
+            <span v-if="type == 'network'">网络出问题了，快去检查一下吧〜</span>
+            <span v-if="type == 'search'">无搜索结果，换个词试试吧〜</span>
+            <span v-if="type == 'star'">还没有关注，赶快人去关注一波吧〜</span>
+        </div>
         <slot></slot>
     </div>
 </template>
@@ -18,7 +27,7 @@
 export default {
     name:'defaultTip',
     data(){
-       return {
+        return {
 
         }
     },
@@ -29,7 +38,7 @@ export default {
         },
         text : {
             type : String,
-            default : '暂无数据'
+            default : ''
         },
         type : {
             type : String,

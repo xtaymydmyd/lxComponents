@@ -1,4 +1,4 @@
-import DefaultTipComponent from './defaultTip.vue'
+import DefaultTipComponent from './index.vue'
 
 const DefaultTip = {
     install: function(Vue) {

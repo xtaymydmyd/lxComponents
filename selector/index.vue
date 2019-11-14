@@ -4,6 +4,7 @@
         width="700"
         v-model="selectModal"
         :title="config.title"
+        :mask-closable="false"
         @on-cancel="cancel">
         <div class="selector flex">
             <div class="selector_left flex flex-direction-column">

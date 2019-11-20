@@ -95,4 +95,4 @@
     } else {
         window.defaultCode = defaultCode;
     }
-})
+})();

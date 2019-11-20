@@ -60,7 +60,7 @@
         <div class="default_code">
             <input v-model="message">
             {{ message }}
-            <div @click="test()">点击</div>
+            <div @click="test()">点击aaaaa</div>
         </div>
     </template>
     <script>
@@ -90,6 +90,8 @@
             border-radius:3px;
         }
     </style>`
+
+
     if (typeof module !== 'undefined' && typeof exports === 'object') {
         module.exports = defaultCode;
     } else {
